@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=/odev-12/",
+    "build": "vite build --base=/",
     "preview": "vite preview"
   },
   "devDependencies": {
