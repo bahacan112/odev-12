@@ -9,34 +9,44 @@ class ImageGallery {
     this.gallery = gallery;
     this.loadingSpinner = loadingSpinner;
     this.loadMoreButton = loadMoreButton;
-    this.currentPage = 1;
-    this.currentQuery = '';
     this.lightbox = new SimpleLightbox('.gallery a', {
       captions: true,
       captionsData: 'alt',
       captionDelay: 250
     });
-
+    this.queryParams={
+      key:"45876667-2d0330e34270c14d815b5249b", 
+      q:this.searchInput.value,
+      page:"1",
+      image_type:"photo",
+      orientation:"horizontal",
+      safesearch:"true",
+      page_per:"40",
+  
+    };
     this.initialize();
   }
 
   initialize() {
+    
     this.loadMoreButton.classList.add('hidden')
     this.searchButton.addEventListener('click', this.handleSearch.bind(this));
     this.loadMoreButton.addEventListener('click', this.loadMoreImages.bind(this));
+
   }
 
   async handleSearch() {
-    this.currentQuery = this.searchInput.value;
-    this.currentPage = 1;
+    
+    this.queryParams.q=this.searchInput.value
+    this.queryParams.page = 1;
     this.gallery.innerHTML = ''; 
     await this.fetchImages(); 
   }
 
   async loadMoreImages() {
-    this.currentPage++; 
-
+    this.queryParams.page++; 
     await this.fetchImages(); 
+
     this.scrollGallery();
   }
   scrollGallery() {
@@ -47,14 +57,13 @@ class ImageGallery {
     }
   }
   async fetchImages() {
-    const url = `https://pixabay.com/api/?key=45876667-2d0330e34270c14d815b5249b&q=${this.currentQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.currentPage}&page_per=40`;
+    const url = `https://pixabay.com/api/`;
 
     this.loadingSpinner.classList.remove('hidden');
     this.loadMoreButton.classList.remove('hidden')
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url,{params:this.queryParams});
       const data = response.data;
-      console.log(data)
       const galleryItems = data.hits
       .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `
@@ -86,9 +95,8 @@ class ImageGallery {
         this.loadMoreButton.classList.add('hidden')
         return;
       }
-console.log(data.totalHits-(this.currentPage*40))
 
-      if (data.totalHits-(this.currentPage*40) < 40 && this.currentPage >= 1) {
+      if (data.totalHits-(this.queryParams.page*40) < 40 && this.queryParams.page >= 1) {
         this.loadMoreButton.classList.add('hidden'); 
         this.loadingSpinner.classList.add('hidden');
 
