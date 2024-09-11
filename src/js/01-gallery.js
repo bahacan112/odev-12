@@ -21,7 +21,7 @@ class ImageGallery {
       image_type:"photo",
       orientation:"horizontal",
       safesearch:"true",
-      page_per:"40",
+      per_page:"40",
   
     };
     this.initialize();
